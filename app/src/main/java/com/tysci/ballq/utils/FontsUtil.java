@@ -9,8 +9,6 @@ import java.lang.reflect.Field;
 /**
  * Created by Administrator on 2015/12/16.
  */
-
-
 public final class FontsUtil {
 
     public static void setDefaultFont(Context context,
@@ -20,16 +18,13 @@ public final class FontsUtil {
         replaceFont(staticTypefaceFieldName, regular);
     }
 
-    protected static void replaceFont(String staticTypefaceFieldName,
-                                      final Typeface newTypeface) {
+    protected static void replaceFont(String staticTypefaceFieldName, final Typeface newTypeface) {
         try {
             final Field staticField = Typeface.class
                     .getDeclaredField(staticTypefaceFieldName);
             staticField.setAccessible(true);
             staticField.set(null, newTypeface);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
