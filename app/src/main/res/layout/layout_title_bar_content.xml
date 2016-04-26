@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="45dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center_vertical"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:gravity="center_vertical">
+
     <RelativeLayout
         android:id="@+id/layout_titlebar_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:layout_centerVertical="true"
         android:padding="10dp">
+
         <ImageView
             android:id="@+id/iv_titlebar_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:clickable="false"/>
+            android:clickable="false" />
+
         <com.tysci.ballq.views.widgets.roundview.RoundTextView
             android:id="@+id/tv_titlebar_left_msg_tip"
-            android:layout_toRightOf="@+id/iv_titlebar_left"
-            android:layout_marginLeft="-5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="-5dp"
+            android:layout_toRightOf="@+id/iv_titlebar_left"
             android:gravity="center"
             android:textColor="#ffffff"
             android:textSize="11.5sp"
@@ -32,8 +35,9 @@
             app:rv_backgroundColor="#FD481F"
             app:rv_isRadiusHalfHeight="true"
             app:rv_strokeColor="#ffffff"
-            app:rv_strokeWidth="2dp"/>
+            app:rv_strokeWidth="2dp" />
     </RelativeLayout>
+
     <TextView
         android:id="@+id/tv_titlebar_title"
         android:layout_width="wrap_content"
@@ -41,33 +45,35 @@
         android:layout_centerInParent="true"
         android:drawablePadding="3dp"
         android:gravity="center"
-        android:textSize="14sp"
-        android:textColor="#ffffff"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:text="排名"
-        android:textStyle="bold"/>
+        android:textColor="#ffffff"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
     <RelativeLayout
         android:id="@+id/layout_titlebar_next"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingRight="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:layout_alignParentRight="true"
         android:gravity="center_vertical"
-        android:layout_alignParentRight="true">
+        android:paddingBottom="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp">
+
         <ImageView
             android:id="@+id/iv_titlebar_next"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
+
         <TextView
             android:id="@+id/tv_titlebar_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:layout_centerVertical="true"
             android:text=""
-            android:visibility="gone"
-            android:layout_centerVertical="true"/>
+            android:textSize="14sp"
+            android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>

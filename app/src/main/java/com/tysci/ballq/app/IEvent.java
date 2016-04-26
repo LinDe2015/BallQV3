@@ -7,6 +7,7 @@ package com.tysci.ballq.app;
 public interface IEvent {
     boolean isNeedBindEventBus();
 
+    @SuppressWarnings("unused")
     void onEventMainThread(EventNotify notify);
 
     void onNotifyJson(String json);

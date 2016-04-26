@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">球商</string>
+    <string name="string_empty" />
 </resources>

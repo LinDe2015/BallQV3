@@ -1,6 +1,7 @@
 package com.tysci.ballq.app;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -15,7 +16,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by HTT on 2016/4/25.
  * All activity base this
  */
-abstract public class BaseActivity extends AppCompatActivity implements IEvent,View.OnClickListener {
+abstract public class BaseActivity extends AppCompatActivity implements IEvent, View.OnClickListener {
     protected final String TAG = this.getClass().getSimpleName();
     protected TitleBar titleBar;
 
@@ -28,8 +29,8 @@ abstract public class BaseActivity extends AppCompatActivity implements IEvent,V
             EventBus.getDefault().register(this);
         }
         setContentView();
-        titleBar=(TitleBar)this.findViewById(R.id.title_bar);
-        if(titleBar!=null){
+        titleBar = (TitleBar) this.findViewById(R.id.title_bar);
+        if (titleBar != null) {
             titleBar.setOnClickBackListener(this);
             titleBar.setOnClickNextListener(this);
         }
@@ -39,7 +40,7 @@ abstract public class BaseActivity extends AppCompatActivity implements IEvent,V
             e.printStackTrace();
             PgyCrashManager.reportCaughtException(this, e);
         }
-    }
+}
 
     abstract protected void setContentView();
 
@@ -63,23 +64,32 @@ abstract public class BaseActivity extends AppCompatActivity implements IEvent,V
 
     abstract protected void initViews() throws Exception;
 
-    protected void setTitle(String title){
-        if(titleBar!=null){
+    protected final <T extends View> T getView(@IdRes int viewId) {
+        //noinspection unchecked
+        return (T) findViewById(viewId);
+    }
+
+    protected final <T extends View> T getView(View parent, @IdRes int viewId) {
+        //noinspection unchecked
+        return (T) parent.findViewById(viewId);
+    }
+
+    protected void setTitle(String title) {
+        if (titleBar != null) {
             titleBar.setTitle(title);
         }
     }
 
-    protected void back(){
+    protected void back() {
         this.finish();
     }
 
-    protected void next(){
-
+    protected void next() {
     }
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.layout_titlebar_back:
                 back();
                 break;
@@ -87,6 +97,7 @@ abstract public class BaseActivity extends AppCompatActivity implements IEvent,V
                 next();
                 break;
         }
+        onViewClick(v);
     }
 
     @Override

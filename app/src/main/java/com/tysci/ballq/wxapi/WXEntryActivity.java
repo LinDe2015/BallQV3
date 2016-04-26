@@ -1,6 +1,7 @@
 package com.tysci.ballq.wxapi;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -28,11 +29,20 @@ public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WeChatUtils.api.handleIntent(getIntent(), this);
     }
 
     @Override
     protected void setContentView() {
+    }
+
+    @Override
+    public boolean isNeedBindEventBus() {
+        return false;
+    }
+
+    @Override
+    public void onViewClick(View view) {
+
     }
 
     @Override

@@ -2,14 +2,17 @@ package com.tysci.ballq.activitys;
 
 import android.view.View;
 
-import com.tysci.ballq.R;
 import com.tysci.ballq.app.BaseActivity;
 
-public class MainActivity extends BaseActivity {
+/**
+ * Created by QianBao on 2016/4/26.
+ * guide of BallQ
+ */
+public class GuideActivity extends BaseActivity {
+    public static final String SP_GUIDE = GuideActivity.class.getName() + "/SP_GUIDE";
 
     @Override
     protected void setContentView() {
-        setContentView(R.layout.activity_main);
     }
 
     @Override
@@ -19,11 +22,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onViewClick(View view) {
-
     }
 
     @Override
     protected void initViews() throws Exception {
-
     }
 }

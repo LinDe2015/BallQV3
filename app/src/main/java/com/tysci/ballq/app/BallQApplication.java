@@ -6,11 +6,14 @@ import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.pgyersdk.crash.PgyCrashManager;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tysci.ballq.R;
 import com.tysci.ballq.networks.HttpClientUtil;
 import com.tysci.ballq.utils.FontsUtil;
 import com.tysci.ballq.utils.WeChatUtils;
+
+import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by Administrator on 2016/4/25.
@@ -20,12 +23,30 @@ public class BallQApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ActivityStacksManager.initActivityStacksManager();
         initFontTypefaces();
+        // 极光推送
+        initJPush();
+        // 蒲公英
+        PgyCrashManager.register(this);
         initWX();
         /**
          * TODO cache路径未设置
          */
         HttpClientUtil.initHttpClientUtil(this, Environment.getExternalStorageDirectory().getPath());
+    }
+
+    /**
+     * 初始化极光推送
+     */
+    private void initJPush() {
+        JPushInterface.setDebugMode(true);// 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);
+//        LogUtils.e("JPush RegistrationID", JPushInterface.getRegistrationID(this));
+    }
+
+    public String getJPushRegId() {
+        return JPushInterface.getRegistrationID(this);
     }
 
     /**
