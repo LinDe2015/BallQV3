@@ -29,7 +29,6 @@ public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WeChatUtils.api.handleIntent(getIntent(), this);
     }
 
     @Override

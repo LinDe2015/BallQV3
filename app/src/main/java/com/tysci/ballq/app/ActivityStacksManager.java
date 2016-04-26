@@ -1,28 +1,28 @@
 package com.tysci.ballq.app;
 
 import android.app.Activity;
-import android.content.Context;
 
 import java.util.Stack;
 
 /**
- * Created by Administrator on 2015/10/8.
+ * Created by HTT on 2015/10/8.
+ * ActivityStacksManager
  */
 public class ActivityStacksManager {
 
-    private  Stack<BaseActivity> activityStack;
+    private Stack<BaseActivity> activityStack;
     private static ActivityStacksManager activityStacksManager = null;
 
     public ActivityStacksManager() {
-        activityStack=new Stack<BaseActivity>();
+        activityStack = new Stack<>();
     }
 
-    public static void initActivityStacksManager(){
-        activityStacksManager=new ActivityStacksManager();
+    public static void initActivityStacksManager() {
+        activityStacksManager = new ActivityStacksManager();
     }
 
     public static ActivityStacksManager getActivityStacksManager() {
-        if(activityStacksManager==null){
+        if (activityStacksManager == null) {
             throw new RuntimeException("....");
         }
         return activityStacksManager;
@@ -40,7 +40,7 @@ public class ActivityStacksManager {
      */
     public void addActivity(BaseActivity activity) {
         if (activityStack == null) {
-            activityStack = new Stack<BaseActivity>();
+            activityStack = new Stack<>();
         }
         activityStack.add(activity);
     }
@@ -56,8 +56,7 @@ public class ActivityStacksManager {
         if (activityStack.isEmpty()) {
             return null;
         }
-        BaseActivity activity = activityStack.lastElement();
-        return (Activity) activity;
+        return activityStack.lastElement();
     }
 
     /**
@@ -71,7 +70,7 @@ public class ActivityStacksManager {
                 break;
             }
         }
-        return (Activity) activity;
+        return activity;
     }
 
     /**
@@ -79,7 +78,7 @@ public class ActivityStacksManager {
      */
     public void finishActivity() {
         BaseActivity activity = activityStack.lastElement();
-        finishActivity((Activity) activity);
+        finishActivity(activity);
     }
 
     /**
@@ -87,6 +86,7 @@ public class ActivityStacksManager {
      */
     public void finishActivity(Activity activity) {
         if (activity != null) {
+            //noinspection SuspiciousMethodCalls
             activityStack.remove(activity);
             // activity.finish();//此处不用finish
             activity = null;
@@ -99,7 +99,7 @@ public class ActivityStacksManager {
     public void finishActivity(Class<?> cls) {
         for (BaseActivity activity : activityStack) {
             if (activity.getClass().equals(cls)) {
-                finishActivity((Activity) activity);
+                finishActivity(activity);
             }
         }
     }
@@ -112,7 +112,7 @@ public class ActivityStacksManager {
     public void finishOthersActivity(Class<?> cls) {
         for (BaseActivity activity : activityStack) {
             if (!(activity.getClass().equals(cls))) {
-                finishActivity((Activity) activity);
+                finishActivity(activity);
             }
         }
     }
@@ -131,9 +131,8 @@ public class ActivityStacksManager {
 
     /**
      * 应用程序退出
-     *
      */
-    public void AppExit(Context context) {
+    public void AppExit(/*Context context*/) {
         try {
             finishAllActivity();
             Runtime.getRuntime().exit(0);

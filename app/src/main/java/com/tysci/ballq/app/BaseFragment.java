@@ -2,13 +2,12 @@ package com.tysci.ballq.app;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.pgyersdk.crash.PgyCrashManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,25 +24,22 @@ abstract public class BaseFragment extends Fragment implements IEvent {
         super.onAttach(context);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = createView(inflater, container, savedInstanceState);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         if (isNeedBindEventBus()) {
             EventBus.getDefault().register(this);
         }
-        initViews(view);
-        return view;
     }
 
-    abstract protected View createView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
+    @Nullable
+    @Override
+    public abstract View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
     abstract protected void initViews(View view);
 
     @Override
-    public boolean isNeedBindEventBus() {
-        return false;
-    }
+    public abstract boolean isNeedBindEventBus();
 
     @Override
     public void onEventMainThread(EventNotify notify) {
@@ -62,6 +58,16 @@ abstract public class BaseFragment extends Fragment implements IEvent {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRootView = view;
+        initViews(view);
+    }
+
+    protected final <T extends View> T getView(@IdRes int viewId) {
+        return getView(mRootView, viewId);
+    }
+
+    protected final <T extends View> T getView(View parent, @IdRes int viewId) {
+        //noinspection unchecked
+        return (T) parent.findViewById(viewId);
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class SPUtils {
 
-    public static SharedPreferences getSP(final Context c) {
+    private static SharedPreferences getSP(final Context c) {
         return c.getSharedPreferences(ResUtils.getString(c.getResources(), R.string.sp_utils_xml_name), Context.MODE_PRIVATE);
     }
 

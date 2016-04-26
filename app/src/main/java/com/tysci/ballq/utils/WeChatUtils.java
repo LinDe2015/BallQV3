@@ -5,7 +5,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.socks.library.KLog;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.pgyersdk.crash.PgyCrashManager;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
@@ -15,13 +17,8 @@ import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tysci.ballq.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by LinDe on 2016/4/25.
@@ -31,21 +28,26 @@ public class WeChatUtils {
     private static final String TAG = "WeChatUtils";
     public static IWXAPI api;
 
-    public static final String APP_ID_WEI_XIN = "wx764a44d6325f4975";
-    public static final String APP_SECRET_WEI_XIN = "35758ebd06710d202acf6270ce1be146";
-    public static final String APP_MCH_ID_WEI_XIN = "1235168302";
+    /**
+     * 微信用户信息key
+     */
+    public static final String WE_CHAT_USER_INFO = WeChatUtils.class.getName() + "/WE_CHAT_USER_INFO";
 
-    public static final String ACCESS_TOKEN = "access_token";
-    public static final String REFRESH_TOKEN = "refresh_token";
-    public static final String OPEN_ID = "openid";
-    public static final String NICK_NAME = "nickname";
-    public static final String SEX = "sex";
-    public static final String PROVINCE = "province";
-    public static final String CITY = "city";
-    public static final String COUNTRY = "country";
-    public static final String HEAD_IMG_UTL = "headimgurl";
-    public static final String UNION_ID = "unionid";
-    public static final String PRIVILEGE = "privilege";
+    private static final String APP_ID_WEI_XIN = "wx764a44d6325f4975";
+    private static final String APP_SECRET_WEI_XIN = "35758ebd06710d202acf6270ce1be146";
+    private static final String APP_MCH_ID_WEI_XIN = "1235168302";
+
+    private static final String ACCESS_TOKEN = "access_token";
+    private static final String REFRESH_TOKEN = "refresh_token";
+    private static final String OPEN_ID = "openid";
+    private static final String NICK_NAME = "nickname";
+    private static final String SEX = "sex";
+    private static final String PROVINCE = "province";
+    private static final String CITY = "city";
+    private static final String COUNTRY = "country";
+    private static final String HEAD_IMG_UTL = "headimgurl";
+    private static final String UNION_ID = "unionid";
+    private static final String PRIVILEGE = "privilege";
 
     public static boolean login(Context c) {
         if (!isHasWeiXin(c)) {
@@ -62,23 +64,22 @@ public class WeChatUtils {
 
     public static void pay(Context c, String json) {
         try {
-            PayReq req = new PayReq();
-
-            final JSONObject object = new JSONObject(json);
-            final JSONObject data = object.optJSONObject("data");
-
-            req.appId = data.optString("appid");
-            req.partnerId = data.optString("partnerid");
-            req.prepayId = data.optString("prepayid");
-            req.packageValue = data.optString("package");
-            req.nonceStr = data.optString("noncestr");
-            req.timeStamp = data.optString("timestamp");
-            req.sign = data.optString("paySign");
+            final JSONObject o = JSON.parseObject(json);
+            final PayReq req = new PayReq();
+            final JSONObject data = o.getJSONObject("data");
+            req.appId = data.getString("appid");
+            req.partnerId = data.getString("partnerid");
+            req.prepayId = data.getString("prepayid");
+            req.packageValue = data.getString("package");
+            req.nonceStr = data.getString("noncestr");
+            req.timeStamp = data.getString("timestamp");
+            req.sign = data.getString("paySign");
 
             api.sendReq(req);
             ToastUtils.show(c, "获取订单成功");
         } catch (Exception e) {
             e.printStackTrace();
+            PgyCrashManager.reportCaughtException(c, e);
             ToastUtils.show(c, "获取订单失败");
         }
     }
@@ -261,15 +262,14 @@ public class WeChatUtils {
     }
 
     public static void saveWXToken(Context c, String s) {
-        JSONObject json;
         try {
-            json = new JSONObject(s);
-            SPUtils.write(c, ACCESS_TOKEN, json.optString(ACCESS_TOKEN));
-            SPUtils.write(c, REFRESH_TOKEN, json.optString(REFRESH_TOKEN));
-            SPUtils.write(c, OPEN_ID, json.optString(OPEN_ID));
-            SPUtils.write(c, UNION_ID, json.optString(UNION_ID));
-        } catch (JSONException e1) {
-            e1.printStackTrace();
+            final JSONObject o = JSON.parseObject(s);
+            SPUtils.write(c, ACCESS_TOKEN, o.getString(ACCESS_TOKEN));
+            SPUtils.write(c, REFRESH_TOKEN, o.getString(REFRESH_TOKEN));
+            SPUtils.write(c, OPEN_ID, o.getString(OPEN_ID));
+            SPUtils.write(c, UNION_ID, o.getString(UNION_ID));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -286,41 +286,25 @@ public class WeChatUtils {
     }
 
     public static void saveWXUserInfo(Context c, String s) {
-        Set<String> set = new HashSet<>();
-        try {
-            JSONObject json = new JSONObject(s);
-            SPUtils.write(c, OPEN_ID, json.optString(OPEN_ID));
-            SPUtils.write(c, NICK_NAME, json.optString(NICK_NAME));
-            SPUtils.write(c, SEX, json.optString(SEX));
-            SPUtils.write(c, PROVINCE, json.optString(PROVINCE));
-            SPUtils.write(c, CITY, json.optString(CITY));
-            SPUtils.write(c, COUNTRY, json.optString(COUNTRY));
-            SPUtils.write(c, HEAD_IMG_UTL, json.optString(HEAD_IMG_UTL));
-            SPUtils.write(c, UNION_ID, json.optString(UNION_ID));
-            if (json.has(PRIVILEGE)) {
-                for (int i = 0; i < json.optJSONArray(PRIVILEGE).length(); i++) {
-                    set.add(json.optJSONArray(PRIVILEGE).getString(i));
-                }
-            }
-            SPUtils.write(c, PRIVILEGE, set);
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-        }
+        SPUtils.write(c, WE_CHAT_USER_INFO, s);
     }
 
     public static HashMap<String, String> getWXUserInfo(Context c) {
+        final String json = SPUtils.read(c, WE_CHAT_USER_INFO, "");
         HashMap<String, String> map = new HashMap<>();
-        map.put(OPEN_ID, SPUtils.read(c, OPEN_ID, ""));
-        map.put(NICK_NAME, SPUtils.read(c, NICK_NAME, ""));
-        map.put(SEX, SPUtils.read(c, SEX, ""));
-        map.put(PROVINCE, SPUtils.read(c, PROVINCE, ""));
-        map.put(CITY, SPUtils.read(c, CITY, ""));
-        map.put(COUNTRY, SPUtils.read(c, COUNTRY, ""));
-        map.put(HEAD_IMG_UTL, SPUtils.read(c, HEAD_IMG_UTL, ""));
-        map.put(UNION_ID, SPUtils.read(c, UNION_ID, ""));
-        map.put("origin_type", "5");
-        for (String key : map.keySet()) {
-            KLog.e(TAG, key + " = " + map.get(key));
+        try {
+            final JSONObject o = JSON.parseObject(json);
+            map.put(OPEN_ID, o.getString(OPEN_ID));
+            map.put(NICK_NAME, o.getString(NICK_NAME));
+            map.put(SEX, o.getString(SEX));
+            map.put(PROVINCE, o.getString(PROVINCE));
+            map.put(CITY, o.getString(CITY));
+            map.put(COUNTRY, o.getString(COUNTRY));
+            map.put(HEAD_IMG_UTL, o.getString(HEAD_IMG_UTL));
+            map.put(UNION_ID, o.getString(UNION_ID));
+            map.put("origin_type", String.valueOf(5));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return map;
     }
