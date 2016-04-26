@@ -36,4 +36,10 @@
         <attr name="border_width" format="dimension"/>
         <attr name="border_color" format="color"/>
     </declare-styleable>
+
+    <declare-styleable name="MainMenuItem">
+        <attr name="menu_icon" format="reference"/>
+        <attr name="menu_name" format="string"/>
+        <attr name="is_selected" format="boolean"/>
+    </declare-styleable>
 </resources>

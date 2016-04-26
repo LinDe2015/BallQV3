@@ -20,6 +20,7 @@ public class BallQApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ActivityStacksManager.initActivityStacksManager();
         initFontTypefaces();
         initWX();
         /**

@@ -87,6 +87,7 @@ abstract public class BaseActivity extends AppCompatActivity implements IEvent,V
                 next();
                 break;
         }
+        onViewClick(v);
     }
 
     @Override

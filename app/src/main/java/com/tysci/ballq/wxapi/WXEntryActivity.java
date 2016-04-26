@@ -1,6 +1,7 @@
 package com.tysci.ballq.wxapi;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -33,6 +34,16 @@ public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler,
 
     @Override
     protected void setContentView() {
+    }
+
+    @Override
+    public boolean isNeedBindEventBus() {
+        return false;
+    }
+
+    @Override
+    public void onViewClick(View view) {
+
     }
 
     @Override
