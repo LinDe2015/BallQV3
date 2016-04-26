@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.pgyersdk.crash.PgyCrashManager;
+import com.tysci.ballq.networks.HttpClientUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -56,6 +57,7 @@ abstract public class BaseActivity extends AppCompatActivity implements IEvent {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        HttpClientUtil.getHttpClientUtil().cancelTag(TAG);
         if (isNeedBindEventBus()) {
             EventBus.getDefault().unregister(this);
         }

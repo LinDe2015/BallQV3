@@ -1,11 +1,14 @@
 package com.tysci.ballq.app;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.pgyersdk.crash.PgyCrashManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -16,6 +19,11 @@ import org.greenrobot.eventbus.EventBus;
 abstract public class BaseFragment extends Fragment implements IEvent {
     protected final String TAG = this.getClass().getSimpleName();
     private View mRootView;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 
     @Nullable
     @Override
