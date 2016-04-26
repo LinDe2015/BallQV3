@@ -11,31 +11,61 @@ import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by Administrator on 2016/4/25.
+ * All fragment base this
  */
-abstract public class BaseFragment extends Fragment{
-    protected final String Tag=this.getClass().getSimpleName();
+abstract public class BaseFragment extends Fragment implements IEvent {
+    protected final String TAG = this.getClass().getSimpleName();
+    private View mRootView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view=createView(inflater,container,savedInstanceState);
-        if(isBindEventBus()){
+        View view = createView(inflater, container, savedInstanceState);
+        if (isNeedBindEventBus()) {
             EventBus.getDefault().register(this);
         }
         initViews(view);
         return view;
     }
 
-    abstract protected boolean isBindEventBus();
-
     abstract protected View createView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
     abstract protected void initViews(View view);
 
     @Override
+    public boolean isNeedBindEventBus() {
+        return false;
+    }
+
+    @Override
+    public void onEventMainThread(EventNotify notify) {
+        for (Class<?> aClass : notify.notifyClasses) {
+            if (aClass == this.getClass()) {
+                onNotifyJson(notify.json);
+            }
+        }
+    }
+
+    @Override
+    public void onNotifyJson(String json) {
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRootView = view;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        if(isBindEventBus()){
+        if (mRootView != null) {
+            if (mRootView instanceof ViewGroup) {
+                ((ViewGroup) mRootView).removeAllViews();
+            }
+        }
+        mRootView = null;
+        if (isNeedBindEventBus()) {
             EventBus.getDefault().unregister(this);
         }
     }

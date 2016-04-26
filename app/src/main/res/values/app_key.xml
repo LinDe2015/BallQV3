@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_id_wx" translatable="false">wx764a44d6325f4975</string>
+    <string name="app_secret_wx" translatable="false">35758ebd06710d202acf6270ce1be146</string>
+</resources>
