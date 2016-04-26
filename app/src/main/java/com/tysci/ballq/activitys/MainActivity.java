@@ -1,15 +1,29 @@
 package com.tysci.ballq.activitys;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.view.View;
 
 import com.tysci.ballq.R;
+import com.tysci.ballq.app.BaseActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void setContentView() {
         setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    public boolean isNeedBindEventBus() {
+        return false;
+    }
+
+    @Override
+    public void onViewClick(View view) {
+
+    }
+
+    @Override
+    protected void initViews() throws Exception {
+
     }
 }
