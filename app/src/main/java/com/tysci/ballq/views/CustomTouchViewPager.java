@@ -18,8 +18,7 @@ import java.util.List;
  *
  * @see ViewPager
  */
-@SuppressWarnings("unused")
-public class CustomViewPager extends ViewPager {
+public class CustomTouchViewPager extends ViewPager {
     /**
      * 允许左右滑动
      */
@@ -28,11 +27,11 @@ public class CustomViewPager extends ViewPager {
     private boolean isSetAdapterTrue;
     private List<LazyLoadingFragment> fragments;
 
-    public CustomViewPager(Context context) {
+    public CustomTouchViewPager(Context context) {
         this(context, null);
     }
 
-    public CustomViewPager(Context context, AttributeSet attrs) {
+    public CustomTouchViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         isSetAdapterTrue = false;
         isCanScrollHorizontal = true;
