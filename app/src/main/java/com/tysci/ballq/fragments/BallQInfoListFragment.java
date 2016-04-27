@@ -40,7 +40,6 @@ public class BallQInfoListFragment extends BaseFragment implements CustomSwipeRe
         recyclerView=(AutoLoadMoreRecyclerView)view.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         swipeRefreshLayout.setRefreshing();
-
     }
 
 
@@ -54,7 +53,6 @@ public class BallQInfoListFragment extends BaseFragment implements CustomSwipeRe
         HttpClientUtil.getHttpClientUtil().sendPostRequest(TAG, url, null, new HttpClientUtil.StringResponseCallBack() {
             @Override
             public void onBefore(Request request) {
-
             }
 
             @Override
@@ -67,7 +65,6 @@ public class BallQInfoListFragment extends BaseFragment implements CustomSwipeRe
             public void onSuccess(Call call, String response) {
                 KLog.e("加载的数据:"+response);
                 KLog.json(response);
-
             }
 
             @Override

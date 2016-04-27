@@ -9,38 +9,51 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.LinearLayout;
 
 /**
  * Created by Administrator on 2016/3/30.
  */
-public class AutoLoadMoreRecyclerView extends RecyclerView{
-    private final String Tag=this.getClass().getSimpleName();
+public class AutoLoadMoreRecyclerView extends RecyclerView {
+    private final String Tag = this.getClass().getSimpleName();
     private Context context;
 
-    /**是否能够自动加载更多*/
-    private boolean isLoadMore=true;
-    /**数据是否加载完成*/
+    /**
+     * 是否能够自动加载更多
+     */
+    private boolean isLoadMore = true;
+    /**
+     * 数据是否加载完成
+     */
     protected boolean isLoadFinished = false;
-    /**是否正在加载更多数据*/
+    /**
+     * 是否正在加载更多数据
+     */
     protected boolean isLoadMoreing = false;
 
-    /**添加的头部视图*/
+    /**
+     * 添加的头部视图
+     */
     private View mHeaderView = null;
-    /**添加的底部视图*/
+    /**
+     * 添加的底部视图
+     */
     private View mFootView = null;
-    /**加载更多的视图*/
+    /**
+     * 加载更多的视图
+     */
     private LoadMoreFooterView loadMoreFooterView;
-    /**加载更多的监听*/
+    /**
+     * 加载更多的监听
+     */
     private OnLoadMoreListener loadMoreListener;
 
     private Adapter mAdapter;
     private Adapter mWrapAdapter;
 
-    public static final int TYPE_HEADER =  -4;
-    public static final int TYPE_NORMAL =  0;
-    public static final int TYPE_FOOTER =  -3;
+    public static final int TYPE_HEADER = -4;
+    public static final int TYPE_NORMAL = 0;
+    public static final int TYPE_FOOTER = -3;
 
 
     public AutoLoadMoreRecyclerView(Context context) {
@@ -58,47 +71,50 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
         initViews(context);
     }
 
-    private void initViews(Context context){
-        this.context=context;
+    private void initViews(Context context) {
+        this.context = context;
     }
 
     /**
      * 添加头部视图
+     *
      * @param view
      */
     public void addHeaderView(View view) {
-        mHeaderView=view;
+        mHeaderView = view;
     }
 
     /**
      * 添加底部视图
+     *
      * @param view
      */
     public void addFooterView(final View view) {
-        mFootView=view;
+        mFootView = view;
     }
 
     /**
      * 设置加载更多的监听事件，并设置加载更多的视图
+     *
      * @param loadMoreListener
      */
-    public void setOnLoadMoreListener(OnLoadMoreListener loadMoreListener){
-        this.isLoadMore=true;
-        this.loadMoreListener=loadMoreListener;
-        if(loadMoreFooterView==null){
-            loadMoreFooterView=new LoadMoreFooterView(context);
-            LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+    public void setOnLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+        this.isLoadMore = true;
+        this.loadMoreListener = loadMoreListener;
+        if (loadMoreFooterView == null) {
+            loadMoreFooterView = new LoadMoreFooterView(context);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             loadMoreFooterView.setLayoutParams(layoutParams);
         }
-        if(mFootView==null) {
-            mFootView=loadMoreFooterView;
+        if (mFootView == null) {
+            mFootView = loadMoreFooterView;
         }
     }
 
 
     @Override
     public void setAdapter(Adapter adapter) {
-        mAdapter  = adapter;
+        mAdapter = adapter;
         mWrapAdapter = new WrapAdapter(mHeaderView, mFootView, adapter);
         super.setAdapter(mWrapAdapter);
         mAdapter.registerAdapterDataObserver(mDataObserver);
@@ -107,9 +123,9 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
     /**
      * 设置正在加载的状态
      */
-    public void setLoadingMore(){
+    public void setLoadingMore() {
         isLoadMoreing = true;
-        if(loadMoreFooterView!=null){
+        if (loadMoreFooterView != null) {
             loadMoreFooterView.setLoadingMoreState();
         }
     }
@@ -117,10 +133,10 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
     /**
      * 设置开始准备加载的状态
      */
-    public void setStartLoadMore(){
-        isLoadMoreing=false;
-        isLoadFinished=false;
-        if(loadMoreFooterView!=null){
+    public void setStartLoadMore() {
+        isLoadMoreing = false;
+        isLoadFinished = false;
+        if (loadMoreFooterView != null) {
             loadMoreFooterView.setLoadingMoreState();
         }
     }
@@ -128,28 +144,28 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
     /**
      * 设置本次加载更多完成
      */
-    public void setLoadMoreComplete(){
-        isLoadMoreing=false;
+    public void setLoadMoreComplete() {
+        isLoadMoreing = false;
     }
 
     /**
      * 表示没有更多的数据可加载的状态
      */
-    public void setLoadMoreDataComplete(){
-        isLoadFinished=true;
-        if(loadMoreFooterView!=null){
+    public void setLoadMoreDataComplete() {
+        isLoadFinished = true;
+        if (loadMoreFooterView != null) {
             loadMoreFooterView.setLoadMoreDataFinishedState(false);
         }
     }
 
-    public void setLoadMoreDataFailed(){
+    public void setLoadMoreDataFailed() {
         isLoadMoreing = false;
-        if(loadMoreFooterView!=null){
+        if (loadMoreFooterView != null) {
             loadMoreFooterView.setLoadFailedTip("加载失败，可点击重试");
             loadMoreFooterView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!isLoadMoreing&&loadMoreListener!=null) {
+                    if (!isLoadMoreing && loadMoreListener != null) {
                         setLoadingMore();
                         loadMoreListener.onLoadMore();
                     }
@@ -160,6 +176,7 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
 
     /**
      * 处理滚动到底部自动加载更多
+     *
      * @param state
      */
     @Override
@@ -174,19 +191,19 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
                 int[] into = new int[((StaggeredGridLayoutManager) layoutManager).getSpanCount()];
                 ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(into);
                 lastVisibleItemPosition = findMax(into);
-            //} //else if(layoutManager instanceof com.tysci.gameathletics.views.widgets.superslim.LayoutManager){
+                //} //else if(layoutManager instanceof com.tysci.gameathletics.views.widgets.superslim.LayoutManager){
                 //lastVisibleItemPosition=((com.tysci.gameathletics.views.widgets.superslim.LayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
-            }else{
+            } else {
                 lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
             }
             if (layoutManager.getChildCount() > 0
                     && lastVisibleItemPosition >= layoutManager.getItemCount() - 1) {
-                if (mFootView!=null) {
+                if (mFootView != null) {
                     mFootView.setVisibility(VISIBLE);
                 }
-                if(isCanLoadMore()){
+                if (isCanLoadMore()) {
                     setLoadingMore();
-                    isLoadMoreing=true;
+                    isLoadMoreing = true;
                     Log.e(Tag, "启动加载更多...");
                     loadMoreListener.onLoadMore();
                 }
@@ -206,22 +223,23 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
 
     /**
      * 是否可以加载更多
+     *
      * @return
      */
-    private boolean isCanLoadMore(){
-        if(!isLoadMore){
+    private boolean isCanLoadMore() {
+        if (!isLoadMore) {
             return false;
         }
-        if(mFootView==null){
+        if (mFootView == null) {
             return false;
         }
-        if(getAdapter()==null){
+        if (getAdapter() == null) {
             return false;
         }
-        if(isLoadMoreing){
+        if (isLoadMoreing) {
             return false;
         }
-        if(isLoadFinished){
+        if (isLoadFinished) {
             return false;
         }
         return true;
@@ -279,7 +297,7 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
         public void onAttachedToRecyclerView(RecyclerView recyclerView) {
             super.onAttachedToRecyclerView(recyclerView);
             LayoutManager manager = recyclerView.getLayoutManager();
-            if(manager instanceof GridLayoutManager) {
+            if (manager instanceof GridLayoutManager) {
                 final GridLayoutManager gridManager = ((GridLayoutManager) manager);
                 gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                     @Override
@@ -295,16 +313,16 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
         public void onViewAttachedToWindow(ViewHolder holder) {
             super.onViewAttachedToWindow(holder);
             ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
-            if(lp != null
+            if (lp != null
                     && lp instanceof StaggeredGridLayoutManager.LayoutParams
-                    &&  (isHeader( holder.getLayoutPosition()) || isFooter( holder.getLayoutPosition())) ) {
+                    && (isHeader(holder.getLayoutPosition()) || isFooter(holder.getLayoutPosition()))) {
                 StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
                 p.setFullSpan(true);
             }
         }
 
         public boolean isHeader(int position) {
-            return position == 0&&mHeaderView!=null;
+            return position == 0 && mHeaderView != null;
         }
 
         /**
@@ -314,19 +332,19 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
          * @return
          */
         public boolean isFooter(int position) {
-            return position == getItemCount()-1 &&mFootView!=null;
+            return position == getItemCount() - 1 && mFootView != null;
         }
 
         public boolean isRefreshHeader(int position) {
-            return position == 0 ;
+            return position == 0;
         }
 
         public int getHeadersCount() {
-            return mHeaderView!=null?1:0;
+            return mHeaderView != null ? 1 : 0;
         }
 
         public int getFootersCount() {
-            return mFootView!=null?1:0;
+            return mFootView != null ? 1 : 0;
         }
 
         @Override
@@ -349,7 +367,7 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
             int adapterCount;
             if (adapter != null) {
                 adapterCount = adapter.getItemCount();
-                if (adjPosition>=0&&adjPosition < adapterCount) {
+                if (adjPosition >= 0 && adjPosition < adapterCount) {
                     adapter.onBindViewHolder(holder, adjPosition);
                     return;
                 }
@@ -370,10 +388,11 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
             if (isHeader(position)) {
                 return TYPE_HEADER;
             }
-            if(isFooter(position)){
+            if (isFooter(position)) {
                 return TYPE_FOOTER;
             }
-            int adjPosition = position - getHeadersCount();;
+            int adjPosition = position - getHeadersCount();
+            ;
             int adapterCount;
             if (adapter != null) {
                 adapterCount = adapter.getItemCount();
@@ -410,10 +429,8 @@ public class AutoLoadMoreRecyclerView extends RecyclerView{
 
         /**
          * 开始加载下一页
-         *
-         *
          */
-        public void onLoadMore();
+        void onLoadMore();
     }
 
 }

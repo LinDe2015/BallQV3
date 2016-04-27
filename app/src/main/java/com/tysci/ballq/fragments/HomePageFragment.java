@@ -63,10 +63,10 @@ public class HomePageFragment extends BaseFragment implements ViewPager.OnPageCh
         LazyLoadingFragment f;
         Bundle b;
 
-        f = new GuideFragment();
-        b = new Bundle();
-        b.putInt(GuideFragment.class.getName(), GuideFragment.PAGE_1);
-        f.setArguments(b);
+        f = new TipListFragment();
+//        b = new Bundle();
+//        b.putInt(GuideFragment.class.getName(), GuideFragment.PAGE_1);
+//        f.setArguments(b);
         fragments.add(f);
 
         f = new GuideFragment();
