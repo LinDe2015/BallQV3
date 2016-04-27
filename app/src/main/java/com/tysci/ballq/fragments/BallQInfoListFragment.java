@@ -3,13 +3,10 @@ package com.tysci.ballq.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.socks.library.KLog;
 import com.tysci.ballq.R;
 import com.tysci.ballq.app.BaseFragment;
@@ -22,10 +19,10 @@ import okhttp3.Call;
 import okhttp3.Request;
 
 /**
- * Created by Administrator on 2016/4/25.
- * 热门圈子列表
+ * Created by Administrator on 2016/4/27.
+ * 球经列表界面
  */
-public class BallQCircleHotNoteListFragment extends BaseFragment implements CustomSwipeRefreshLayout.OnRefreshListener{
+public class BallQInfoListFragment extends BaseFragment implements CustomSwipeRefreshLayout.OnRefreshListener{
     private CustomSwipeRefreshLayout swipeRefreshLayout;
     private AutoLoadMoreRecyclerView recyclerView;
     private int currentPages=1;
@@ -43,22 +40,18 @@ public class BallQCircleHotNoteListFragment extends BaseFragment implements Cust
         recyclerView=(AutoLoadMoreRecyclerView)view.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         swipeRefreshLayout.setRefreshing();
+
     }
+
 
     @Override
     public boolean isNeedBindEventBus() {
         return false;
     }
 
-    /**
-     * 加载数据
-     * @param pages
-     * @param isLoadMore
-     */
-    private void requestDatas(int pages,final boolean isLoadMore){
-        String url= HttpUrls.HOT_CIRCLE_LIST_URL+"?pageNo="+pages+"&pageSize=10";
-        KLog.e("Url:" + url);
-        HttpClientUtil.getHttpClientUtil().sendGetRequest(TAG, url, 10, new HttpClientUtil.StringResponseCallBack() {
+    private void requestDatas(int pages){
+        String url= HttpUrls.BALLQ_INFO_LIST_URL+"?p="+pages;
+        HttpClientUtil.getHttpClientUtil().sendPostRequest(TAG, url, null, new HttpClientUtil.StringResponseCallBack() {
             @Override
             public void onBefore(Request request) {
 
@@ -67,33 +60,27 @@ public class BallQCircleHotNoteListFragment extends BaseFragment implements Cust
             @Override
             public void onError(Call call, Exception error) {
                 KLog.e("加载失败...");
+
             }
 
             @Override
             public void onSuccess(Call call, String response) {
-                KLog.e("加载的数据:" + response);
+                KLog.e("加载的数据:"+response);
                 KLog.json(response);
-                if(!TextUtils.isEmpty(response)){
-                    JSONObject obj= JSON.parseObject(response);
 
-                }
             }
 
             @Override
             public void onFinish(Call call) {
-                if(!isLoadMore){
-                    swipeRefreshLayout.onRefreshComplete();
-                }
-
+                swipeRefreshLayout.onRefreshComplete();
             }
         });
-
     }
 
     @Override
     public void onRefresh() {
         currentPages=1;
-        requestDatas(currentPages,false);
+        requestDatas(currentPages);
 
     }
 }

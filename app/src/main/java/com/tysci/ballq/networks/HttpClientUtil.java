@@ -4,11 +4,14 @@ package com.tysci.ballq.networks;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.StringRes;
+import android.text.TextUtils;
 
 import com.tysci.ballq.networks.cookie.CookieJarImpl;
 import com.tysci.ballq.networks.cookie.store.PersistentCookieStore;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,6 +20,7 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.GZIPInputStream;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
@@ -116,9 +120,7 @@ public class HttpClientUtil {
         builder.tag(tag)
                 .url(url)
                 .cacheControl(createCacheControl(maxAge));
-        if(headers!=null&&!headers.isEmpty()){
-            builder.headers(createHeaders(headers));
-        }
+        builder.headers(createHeaders(headers));
         return builder;
     }
 
@@ -130,11 +132,13 @@ public class HttpClientUtil {
     protected Headers createHeaders(Map<String,String>headers)
     {
         Headers.Builder headerBuilder = new Headers.Builder();
-        if (headers == null || headers.isEmpty()) return null;
+        headerBuilder.add("Charset", "UTF-8");
+        headerBuilder.add("Accept-Encoding", "gzip,deflate");
+        if (headers != null &&!headers.isEmpty()) {
 
-        for (String key : headers.keySet())
-        {
-            headerBuilder.add(key, headers.get(key));
+            for (String key : headers.keySet()) {
+                headerBuilder.add(key, headers.get(key));
+            }
         }
         return headerBuilder.build();
     }
@@ -209,7 +213,7 @@ public class HttpClientUtil {
     }
 
     public void sendGetRequest(String tag,String url,int maxAge, final StringResponseCallBack responseCallBack){
-        sendGetRequest(tag,url,maxAge,null,responseCallBack);
+        sendGetRequest(tag, url, maxAge, null, responseCallBack);
     }
 
     public void sendGetRequest(String tag,String url,int maxAge,Map<String,String>headers,final StringResponseCallBack responseCallBack){
@@ -226,6 +230,30 @@ public class HttpClientUtil {
 
     public void sendPostRequest(String tag,String url,Map<String,String> params,final StringResponseCallBack responseCallBack){
         sendPostRequest(tag, url, null, params, responseCallBack);
+    }
+
+    private String getResponseResult(Response response) throws IOException {
+        String contentType=response.headers().get("Content-Encoding");
+        String result=null;
+        if(!TextUtils.isEmpty(contentType)&&contentType.equalsIgnoreCase("gzip")){
+            // 以GZIP形式压缩后的字符串，需要解压缩
+
+                GZIPInputStream gzip = new GZIPInputStream(new BufferedInputStream(new ByteArrayInputStream(response.body().bytes())));
+                //noinspection SpellCheckingInspection
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                byte[] buffer = new byte[256];
+                int count;
+                while ((count = gzip.read(buffer)) >= 0)
+                {
+                    baos.write(buffer, 0, count);
+                }
+                byte[] bytes = baos.toByteArray();
+                result = new String(bytes,"UTF-8");
+        }else{
+            // 正常数据，不需要解压缩
+            result = new String(response.body().bytes(), "UTF-8");
+        }
+        return result;
     }
 
     private void handlerReqeust(Request request, final StringResponseCallBack responseCallBack){
@@ -245,13 +273,25 @@ public class HttpClientUtil {
             }
 
             @Override
-            public void onResponse(Call call, final Response response) throws IOException {
+            public void onResponse(final Call call, final Response response) throws IOException {
                 final Call resultCall = call;
-                final String result = response.body().string();
+                String result = null;
+                Exception error=null;
+                try{
+                    result=getResponseResult(response);
+                }catch(IOException exception){
+                    error=exception;
+                }
+                final String finalResult = result;
+                final Exception finalError = error;
                 devidlerHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        responseCallBack.onSuccess(resultCall, result);
+                        if(TextUtils.isEmpty(finalResult)||finalError !=null) {
+                            responseCallBack.onError(call, finalError);
+                        }else{
+                            responseCallBack.onSuccess(call,finalResult);
+                        }
                         responseCallBack.onFinish(resultCall);
                     }
                 });
