@@ -249,6 +249,8 @@ public class HttpClientUtil {
                 }
                 byte[] bytes = baos.toByteArray();
                 result = new String(bytes,"UTF-8");
+            gzip.close();
+            baos.close();;
         }else{
             // 正常数据，不需要解压缩
             result = new String(response.body().bytes(), "UTF-8");

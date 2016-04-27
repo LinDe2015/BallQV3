@@ -1,10 +1,11 @@
 package com.tysci.ballq.activitys;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.tysci.ballq.R;
 import com.tysci.ballq.app.BaseActivity;
-import com.tysci.ballq.fragments.HomePageFragment;
 import com.tysci.ballq.fragments.BallQInfoListFragment;
 import com.tysci.ballq.views.widgets.MainMenuItem;
 import com.tysci.ballq.views.widgets.slidingmenu.SlidingMenu;
