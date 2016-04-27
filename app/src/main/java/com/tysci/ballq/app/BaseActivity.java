@@ -92,10 +92,10 @@ abstract public class BaseActivity extends AppCompatActivity implements IEvent, 
         switch (v.getId()) {
             case R.id.layout_titlebar_back:
                 back();
-                break;
+                return;
             case R.id.layout_titlebar_next:
                 next();
-                break;
+                return;
         }
         onViewClick(v);
     }

@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 
 import com.tysci.ballq.app.LazyLoadingFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,7 +82,7 @@ public class CustomTouchViewPager extends ViewPager {
         isSetAdapterTrue = false;
     }
 
-    public void setAdapter(FragmentManager manager, final List<LazyLoadingFragment> list) {
+    public void setAdapter(FragmentManager manager, final ArrayList<LazyLoadingFragment> list) {
         isSetAdapterTrue = true;
         setAdapter(new FragmentStatePagerAdapter(manager) {
             @Override
@@ -97,6 +98,9 @@ public class CustomTouchViewPager extends ViewPager {
         fragments = list;
     }
 
+    /**
+     * clear
+     */
     public final void clear() {
         if (fragments != null) {
             fragments.clear();

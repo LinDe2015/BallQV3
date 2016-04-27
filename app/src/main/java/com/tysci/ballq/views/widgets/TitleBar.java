@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tysci.ballq.R;
 import com.tysci.ballq.views.widgets.roundview.RoundTextView;
 

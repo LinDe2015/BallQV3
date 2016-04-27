@@ -3,8 +3,10 @@ package com.tysci.ballq.app;
 import android.app.Application;
 import android.os.Environment;
 import android.support.annotation.LayoutRes;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.pgyersdk.crash.PgyCrashManager;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -45,6 +47,9 @@ public class BallQApplication extends Application {
 //        LogUtils.e("JPush RegistrationID", JPushInterface.getRegistrationID(this));
     }
 
+    /**
+     * @return 极光推送ID
+     */
     public String getJPushRegId() {
         return JPushInterface.getRegistrationID(this);
     }
@@ -68,5 +73,12 @@ public class BallQApplication extends Application {
 
     public View createView(@LayoutRes int layoutResID) {
         return LayoutInflater.from(this).inflate(layoutResID, null);
+    }
+
+    public DisplayMetrics getMetrics() {
+        final DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm;
     }
 }

@@ -4,10 +4,11 @@ import android.view.View;
 
 import com.tysci.ballq.R;
 import com.tysci.ballq.app.BaseActivity;
+import com.tysci.ballq.fragments.HomePageFragment;
 import com.tysci.ballq.views.widgets.slidingmenu.SlidingMenu;
 
 public class MainActivity extends BaseActivity {
-    private SlidingMenu slidingMenu=null;
+    private SlidingMenu slidingMenu;
 
     @Override
     protected void setContentView() {
@@ -21,8 +22,8 @@ public class MainActivity extends BaseActivity {
         initSlidingMenu();
     }
 
-    private void initSlidingMenu(){
-        slidingMenu=new SlidingMenu(this);
+    private void initSlidingMenu() {
+        slidingMenu = new SlidingMenu(this);
         slidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
         // 设置触摸屏幕的模式
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCH_MODE_FULLSCREEN);
@@ -36,6 +37,11 @@ public class MainActivity extends BaseActivity {
         slidingMenu.setMenu(R.layout.layout_main_left_menu);
         slidingMenu.setSecondaryMenu(R.layout.layout_main_right_menu);
         slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.layout_container, new HomePageFragment())
+                .commit();
     }
 
     @Override
@@ -45,7 +51,5 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onViewClick(View view) {
-
     }
-
 }
