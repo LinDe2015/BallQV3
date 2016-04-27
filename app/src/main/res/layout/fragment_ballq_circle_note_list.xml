@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include
+        layout="@layout/layout_recyclerview_list"/>
+    <Button
+        android:id="@+id/bt_post_note"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom|right"
+        android:background="@drawable/button_post_note_bg"
+        android:layout_margin="15dp"
+        android:textSize="14sp"
+        android:text="发帖"/>
+</FrameLayout>
